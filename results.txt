@@ -1,0 +1,21 @@
+=== 模式: baseline ===
+[Baseline] Time elapsed: 4.209 seconds
+
+=== 模式: openmp ===
+[OpenMP] Time elapsed: 0.481 seconds, Valid: true
+
+=== 模式: block ===
+[Block Parallel] Time elapsed: 0.0539999 seconds, Valid: true
+
+=== 模式: other ===
+[Other (Transpose)] Time elapsed: 0.15 seconds, Valid: true
+
+=== 模式: simd ===
+[SIMD] Time elapsed: 1.133 seconds, Valid: true
+
+=== 模式: simd_openmp ===
+[SIMD+OpenMP] Time elapsed: 0.14 seconds, Valid: true
+
+=== 模式: simd_block ===
+[SIMD+Block] Time elapsed: 0.188 seconds, Valid: true
+
