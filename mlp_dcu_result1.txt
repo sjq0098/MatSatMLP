@@ -1,0 +1,223 @@
+====== 编译 mlp_dcu.cpp ======
+[Done] 生成可执行文件：mlp_dcu
+
+====== 运行 mlp_dcu ======
+[DEBUG] 程序启动
+[INFO] 成功读取数据量: 3394
+[DEBUG] 加载数据完毕, data.size() = 3394
+[INFO] 开始训练，共 11 个批次，每批大小 256。总样本数 = 2707
+[Epoch 1/200] Loss = 0.794123, Time = 7.42698 ms
+[Epoch 2/200] Loss = 0.679389, Time = 5.889 ms
+[Epoch 3/200] Loss = 0.582157, Time = 5.88539 ms
+[Epoch 4/200] Loss = 0.499762, Time = 5.88215 ms
+[Epoch 5/200] Loss = 0.429947, Time = 5.87739 ms
+[Epoch 6/200] Loss = 0.370791, Time = 5.89049 ms
+[Epoch 7/200] Loss = 0.320663, Time = 5.89584 ms
+[Epoch 8/200] Loss = 0.278185, Time = 5.88197 ms
+[Epoch 9/200] Loss = 0.242188, Time = 5.88997 ms
+[Epoch 10/200] Loss = 0.211678, Time = 5.90369 ms
+[Epoch 11/200] Loss = 0.185821, Time = 5.89454 ms
+[Epoch 12/200] Loss = 0.163906, Time = 5.88365 ms
+[Epoch 13/200] Loss = 0.145331, Time = 5.89015 ms
+[Epoch 14/200] Loss = 0.129586, Time = 5.89146 ms
+[Epoch 15/200] Loss = 0.116241, Time = 5.90637 ms
+[Epoch 16/200] Loss = 0.104929, Time = 5.90208 ms
+[Epoch 17/200] Loss = 0.0953398, Time = 5.90532 ms
+[Epoch 18/200] Loss = 0.087209, Time = 5.88849 ms
+[Epoch 19/200] Loss = 0.0803147, Time = 5.90005 ms
+[Epoch 20/200] Loss = 0.0744686, Time = 5.89408 ms
+[Epoch 21/200] Loss = 0.0695108, Time = 5.89731 ms
+[Epoch 22/200] Loss = 0.065306, Time = 5.88242 ms
+[Epoch 23/200] Loss = 0.0617395, Time = 5.89537 ms
+[Epoch 24/200] Loss = 0.0587138, Time = 5.88983 ms
+[Epoch 25/200] Loss = 0.0561465, Time = 5.88923 ms
+[Epoch 26/200] Loss = 0.0539677, Time = 5.90423 ms
+[Epoch 27/200] Loss = 0.052118, Time = 5.88814 ms
+[Epoch 28/200] Loss = 0.0505473, Time = 5.89607 ms
+[Epoch 29/200] Loss = 0.049213, Time = 5.90325 ms
+[Epoch 30/200] Loss = 0.0480793, Time = 5.90002 ms
+[Epoch 31/200] Loss = 0.0471156, Time = 5.89205 ms
+[Epoch 32/200] Loss = 0.0462961, Time = 5.90489 ms
+[Epoch 33/200] Loss = 0.0455987, Time = 5.91188 ms
+[Epoch 34/200] Loss = 0.0450049, Time = 5.90133 ms
+[Epoch 35/200] Loss = 0.044499, Time = 5.90989 ms
+[Epoch 36/200] Loss = 0.0440675, Time = 5.90204 ms
+[Epoch 37/200] Loss = 0.0436991, Time = 5.88689 ms
+[Epoch 38/200] Loss = 0.0433842, Time = 5.89523 ms
+[Epoch 39/200] Loss = 0.0431146, Time = 5.87673 ms
+[Epoch 40/200] Loss = 0.0428836, Time = 5.8982 ms
+[Epoch 41/200] Loss = 0.0426852, Time = 5.89919 ms
+[Epoch 42/200] Loss = 0.0425144, Time = 5.90871 ms
+[Epoch 43/200] Loss = 0.0423672, Time = 5.88755 ms
+[Epoch 44/200] Loss = 0.0422398, Time = 5.89182 ms
+[Epoch 45/200] Loss = 0.0421294, Time = 5.90601 ms
+[Epoch 46/200] Loss = 0.0420332, Time = 5.89335 ms
+[Epoch 47/200] Loss = 0.0419493, Time = 5.8882 ms
+[Epoch 48/200] Loss = 0.0418756, Time = 5.89469 ms
+[Epoch 49/200] Loss = 0.0418108, Time = 5.88334 ms
+[Epoch 50/200] Loss = 0.0417534, Time = 5.89325 ms
+[Epoch 51/200] Loss = 0.0417023, Time = 5.9127 ms
+[Epoch 52/200] Loss = 0.0416566, Time = 5.88947 ms
+[Epoch 53/200] Loss = 0.0416155, Time = 5.89462 ms
+[Epoch 54/200] Loss = 0.0415783, Time = 5.90399 ms
+[Epoch 55/200] Loss = 0.0415445, Time = 5.90507 ms
+[Epoch 56/200] Loss = 0.0415134, Time = 5.90803 ms
+[Epoch 57/200] Loss = 0.0414848, Time = 5.8831 ms
+[Epoch 58/200] Loss = 0.0414582, Time = 5.89573 ms
+[Epoch 59/200] Loss = 0.0414333, Time = 5.89612 ms
+[Epoch 60/200] Loss = 0.0414099, Time = 5.89256 ms
+[Epoch 61/200] Loss = 0.0413878, Time = 5.8933 ms
+[Epoch 62/200] Loss = 0.0413668, Time = 5.89037 ms
+[Epoch 63/200] Loss = 0.0413467, Time = 5.89408 ms
+[Epoch 64/200] Loss = 0.0413274, Time = 5.90114 ms
+[Epoch 65/200] Loss = 0.0413088, Time = 5.9046 ms
+[Epoch 66/200] Loss = 0.0412908, Time = 5.88688 ms
+[Epoch 67/200] Loss = 0.0412734, Time = 5.89492 ms
+[Epoch 68/200] Loss = 0.0412563, Time = 5.89721 ms
+[Epoch 69/200] Loss = 0.0412397, Time = 5.88567 ms
+[Epoch 70/200] Loss = 0.0412233, Time = 5.88389 ms
+[Epoch 71/200] Loss = 0.0412073, Time = 5.87926 ms
+[Epoch 72/200] Loss = 0.0411914, Time = 5.89428 ms
+[Epoch 73/200] Loss = 0.0411758, Time = 5.88646 ms
+[Epoch 74/200] Loss = 0.0411604, Time = 5.89288 ms
+[Epoch 75/200] Loss = 0.0411451, Time = 5.88992 ms
+[Epoch 76/200] Loss = 0.0411299, Time = 5.88462 ms
+[Epoch 77/200] Loss = 0.041115, Time = 5.89208 ms
+[Epoch 78/200] Loss = 0.0411002, Time = 5.89177 ms
+[Epoch 79/200] Loss = 0.0410854, Time = 5.89869 ms
+[Epoch 80/200] Loss = 0.0410708, Time = 5.88502 ms
+[Epoch 81/200] Loss = 0.0410563, Time = 5.89437 ms
+[Epoch 82/200] Loss = 0.0410418, Time = 5.88758 ms
+[Epoch 83/200] Loss = 0.0410273, Time = 5.89088 ms
+[Epoch 84/200] Loss = 0.041013, Time = 5.89992 ms
+[Epoch 85/200] Loss = 0.0409987, Time = 5.8846 ms
+[Epoch 86/200] Loss = 0.0409845, Time = 5.88059 ms
+[Epoch 87/200] Loss = 0.0409703, Time = 5.89599 ms
+[Epoch 88/200] Loss = 0.0409562, Time = 5.88476 ms
+[Epoch 89/200] Loss = 0.040942, Time = 5.8834 ms
+[Epoch 90/200] Loss = 0.040928, Time = 5.8896 ms
+[Epoch 91/200] Loss = 0.0409139, Time = 5.89412 ms
+[Epoch 92/200] Loss = 0.0408999, Time = 5.90691 ms
+[Epoch 93/200] Loss = 0.0408859, Time = 5.89506 ms
+[Epoch 94/200] Loss = 0.0408719, Time = 5.8985 ms
+[Epoch 95/200] Loss = 0.040858, Time = 5.88521 ms
+[Epoch 96/200] Loss = 0.0408441, Time = 5.8903 ms
+[Epoch 97/200] Loss = 0.0408302, Time = 5.88633 ms
+[Epoch 98/200] Loss = 0.0408164, Time = 5.88408 ms
+[Epoch 99/200] Loss = 0.0408025, Time = 5.88485 ms
+[Epoch 100/200] Loss = 0.0407887, Time = 5.89493 ms
+[Epoch 101/200] Loss = 0.040775, Time = 5.8971 ms
+[Epoch 102/200] Loss = 0.0407612, Time = 5.8836 ms
+[Epoch 103/200] Loss = 0.0407475, Time = 5.9002 ms
+[Epoch 104/200] Loss = 0.0407337, Time = 5.90184 ms
+[Epoch 105/200] Loss = 0.04072, Time = 5.89088 ms
+[Epoch 106/200] Loss = 0.0407063, Time = 5.89264 ms
+[Epoch 107/200] Loss = 0.0406926, Time = 5.90243 ms
+[Epoch 108/200] Loss = 0.0406789, Time = 5.89921 ms
+[Epoch 109/200] Loss = 0.0406652, Time = 5.89281 ms
+[Epoch 110/200] Loss = 0.0406516, Time = 5.89188 ms
+[Epoch 111/200] Loss = 0.040638, Time = 5.9092 ms
+[Epoch 112/200] Loss = 0.0406244, Time = 5.89705 ms
+[Epoch 113/200] Loss = 0.0406109, Time = 5.90448 ms
+[Epoch 114/200] Loss = 0.0405973, Time = 5.89338 ms
+[Epoch 115/200] Loss = 0.0405837, Time = 5.8921 ms
+[Epoch 116/200] Loss = 0.0405701, Time = 5.87019 ms
+[Epoch 117/200] Loss = 0.0405566, Time = 5.89292 ms
+[Epoch 118/200] Loss = 0.040543, Time = 5.89986 ms
+[Epoch 119/200] Loss = 0.0405295, Time = 5.88115 ms
+[Epoch 120/200] Loss = 0.040516, Time = 5.89858 ms
+[Epoch 121/200] Loss = 0.0405026, Time = 5.87837 ms
+[Epoch 122/200] Loss = 0.0404892, Time = 5.89919 ms
+[Epoch 123/200] Loss = 0.0404758, Time = 5.90529 ms
+[Epoch 124/200] Loss = 0.0404624, Time = 5.89104 ms
+[Epoch 125/200] Loss = 0.040449, Time = 5.88915 ms
+[Epoch 126/200] Loss = 0.0404356, Time = 5.89888 ms
+[Epoch 127/200] Loss = 0.0404223, Time = 5.88617 ms
+[Epoch 128/200] Loss = 0.0404089, Time = 5.88924 ms
+[Epoch 129/200] Loss = 0.0403956, Time = 5.89994 ms
+[Epoch 130/200] Loss = 0.0403823, Time = 5.87775 ms
+[Epoch 131/200] Loss = 0.040369, Time = 5.89715 ms
+[Epoch 132/200] Loss = 0.0403557, Time = 5.88892 ms
+[Epoch 133/200] Loss = 0.0403425, Time = 5.88973 ms
+[Epoch 134/200] Loss = 0.0403292, Time = 5.89351 ms
+[Epoch 135/200] Loss = 0.0403159, Time = 5.88736 ms
+[Epoch 136/200] Loss = 0.0403027, Time = 5.91104 ms
+[Epoch 137/200] Loss = 0.0402894, Time = 5.89889 ms
+[Epoch 138/200] Loss = 0.0402762, Time = 5.89051 ms
+[Epoch 139/200] Loss = 0.040263, Time = 5.88541 ms
+[Epoch 140/200] Loss = 0.0402498, Time = 5.88472 ms
+[Epoch 141/200] Loss = 0.0402367, Time = 5.89067 ms
+[Epoch 142/200] Loss = 0.0402235, Time = 5.88883 ms
+[Epoch 143/200] Loss = 0.0402105, Time = 5.89122 ms
+[Epoch 144/200] Loss = 0.0401974, Time = 5.891 ms
+[Epoch 145/200] Loss = 0.0401844, Time = 5.89789 ms
+[Epoch 146/200] Loss = 0.0401713, Time = 5.89196 ms
+[Epoch 147/200] Loss = 0.0401583, Time = 5.89133 ms
+[Epoch 148/200] Loss = 0.0401452, Time = 5.89432 ms
+[Epoch 149/200] Loss = 0.0401322, Time = 5.90005 ms
+[Epoch 150/200] Loss = 0.0401192, Time = 5.8821 ms
+[Epoch 151/200] Loss = 0.0401063, Time = 5.89896 ms
+[Epoch 152/200] Loss = 0.0400934, Time = 5.90693 ms
+[Epoch 153/200] Loss = 0.0400805, Time = 5.89067 ms
+[Epoch 154/200] Loss = 0.0400676, Time = 5.89234 ms
+[Epoch 155/200] Loss = 0.0400547, Time = 5.87896 ms
+[Epoch 156/200] Loss = 0.0400419, Time = 5.88556 ms
+[Epoch 157/200] Loss = 0.0400291, Time = 5.90013 ms
+[Epoch 158/200] Loss = 0.0400163, Time = 5.89459 ms
+[Epoch 159/200] Loss = 0.0400035, Time = 5.88728 ms
+[Epoch 160/200] Loss = 0.0399908, Time = 5.90074 ms
+[Epoch 161/200] Loss = 0.039978, Time = 5.90648 ms
+[Epoch 162/200] Loss = 0.0399653, Time = 5.89295 ms
+[Epoch 163/200] Loss = 0.0399525, Time = 5.88902 ms
+[Epoch 164/200] Loss = 0.0399398, Time = 5.89756 ms
+[Epoch 165/200] Loss = 0.039927, Time = 5.8921 ms
+[Epoch 166/200] Loss = 0.0399143, Time = 5.88683 ms
+[Epoch 167/200] Loss = 0.0399015, Time = 5.88339 ms
+[Epoch 168/200] Loss = 0.0398888, Time = 5.88462 ms
+[Epoch 169/200] Loss = 0.0398761, Time = 5.88368 ms
+[Epoch 170/200] Loss = 0.0398634, Time = 5.8899 ms
+[Epoch 171/200] Loss = 0.0398507, Time = 5.89526 ms
+[Epoch 172/200] Loss = 0.0398381, Time = 5.88342 ms
+[Epoch 173/200] Loss = 0.0398254, Time = 5.88044 ms
+[Epoch 174/200] Loss = 0.0398128, Time = 5.88667 ms
+[Epoch 175/200] Loss = 0.0398002, Time = 5.8839 ms
+[Epoch 176/200] Loss = 0.0397876, Time = 5.90064 ms
+[Epoch 177/200] Loss = 0.039775, Time = 5.89158 ms
+[Epoch 178/200] Loss = 0.0397624, Time = 5.87965 ms
+[Epoch 179/200] Loss = 0.0397499, Time = 5.89925 ms
+[Epoch 180/200] Loss = 0.0397374, Time = 5.88953 ms
+[Epoch 181/200] Loss = 0.039725, Time = 5.89037 ms
+[Epoch 182/200] Loss = 0.0397126, Time = 5.88101 ms
+[Epoch 183/200] Loss = 0.0397002, Time = 5.89581 ms
+[Epoch 184/200] Loss = 0.0396878, Time = 5.89841 ms
+[Epoch 185/200] Loss = 0.0396754, Time = 5.89492 ms
+[Epoch 186/200] Loss = 0.0396631, Time = 5.89429 ms
+[Epoch 187/200] Loss = 0.0396508, Time = 5.88475 ms
+[Epoch 188/200] Loss = 0.0396384, Time = 5.88995 ms
+[Epoch 189/200] Loss = 0.0396261, Time = 5.87946 ms
+[Epoch 190/200] Loss = 0.0396138, Time = 5.88992 ms
+[Epoch 191/200] Loss = 0.0396015, Time = 5.89644 ms
+[Epoch 192/200] Loss = 0.0395893, Time = 5.88636 ms
+[Epoch 193/200] Loss = 0.0395772, Time = 5.89652 ms
+[Epoch 194/200] Loss = 0.039565, Time = 5.88474 ms
+[Epoch 195/200] Loss = 0.0395529, Time = 5.88625 ms
+[Epoch 196/200] Loss = 0.0395408, Time = 5.90549 ms
+[Epoch 197/200] Loss = 0.0395287, Time = 5.8898 ms
+[Epoch 198/200] Loss = 0.0395166, Time = 5.90018 ms
+[Epoch 199/200] Loss = 0.0395045, Time = 5.90135 ms
+[Epoch 200/200] Loss = 0.0394925, Time = 5.90561 ms
+[INFO] 测试集 MSE = 0.0456248
+[Sample Predictions vs True] (前 10 个测试样本)
+  Pred[0] = 201.384, True[0] = 240.14
+  Pred[1] = 152.897, True[1] = 242.39
+  Pred[2] = 238.486, True[2] = 227.75
+  Pred[3] = 296.263, True[3] = 196.26
+  Pred[4] = 241.753, True[4] = 237
+  Pred[5] = 182.426, True[5] = 254.86
+  Pred[6] = 187.298, True[6] = 275.29
+  Pred[7] = 245.061, True[7] = 281.79
+  Pred[8] = 250.858, True[8] = 280.32
+  Pred[9] = 259.801, True[9] = 250.22
+[Done] mlp_dcu 执行完毕，输出已追加到 mlp_dcu_result.txt
+
+====== 若要进一步做性能剖析，请执行：hipprof ./mlp_dcu ======

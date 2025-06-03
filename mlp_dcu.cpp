@@ -9,11 +9,11 @@
 #include <algorithm>
 
 // 编译：
-// hipcc mlp_full_dcu_xavier.cpp -o mlp_full_dcu_xavier
+// hipcc mlp_full_dcu_xavier_momentum.cpp -o mlp_full_dcu_xavier_momentum
 // 运行：
-// ./mlp_full_dcu_xavier
+// ./mlp_full_dcu_xavier_momentum
 // 若要剖析性能，可：
-// hipprof ./mlp_full_dcu_xavier
+// hipprof ./mlp_full_dcu_xavier_momentum
 
 // ---------------------- 网络超参数 ----------------------
 #define INPUT_DIM     10
@@ -22,6 +22,7 @@
 #define BATCH_SIZE    256
 #define EPOCHS        200
 #define LEARNING_RATE 1e-4
+#define MOMENTUM      0.9
 
 // ---------------------- GPU 内核声明 ----------------------
 
@@ -100,12 +101,17 @@ __global__ void compute_mse_loss(const double* pred, const double* target, doubl
     return;
 }
 
-// 7) SGD 更新：weight[i] -= lr * grad[i]
-__global__ void sgd_update(double* weights, const double* grad, double lr, int size)
+// 7) 带动量的 SGD 更新：
+//    v[i] = momentum * v[i] + lr * grad[i]
+//    weight[i] -= v[i]
+__global__ void momentum_sgd_update(double* weights, double* velocities, const double* grad, double lr, double momentum, int size)
 {
     int idx = blockIdx.x * blockDim.x + threadIdx.x;
     if (idx < size) {
-        weights[idx] -= lr * grad[idx];
+        double v_old = velocities[idx];
+        double v_new = momentum * v_old + lr * grad[idx];
+        velocities[idx] = v_new;
+        weights[idx] -= v_new;
     }
 }
 
@@ -158,11 +164,9 @@ void create_dataset(const std::vector<double>& data,
     X.resize(total_samples * INPUT_DIM);
     y.resize(total_samples * OUTPUT_DIM);
     for (int i = 0; i < total_samples; ++i) {
-        // X[i,:] = data[i .. i+INPUT_DIM-1]
         for (int j = 0; j < INPUT_DIM; ++j) {
             X[i * INPUT_DIM + j] = data[i + j];
         }
-        // y[i] = data[i + INPUT_DIM]
         y[i] = data[i + INPUT_DIM];
     }
 }
@@ -225,20 +229,13 @@ int main() {
     std::vector<double> y_test (y_total.begin() + train_samples, y_total.end());
 
     // 5) 在设备端一次性分配所有必要缓冲区（避免多次 hipMalloc 开销）
-    //    - X_batch: BATCH_SIZE×INPUT_DIM
-    //    - H_lin, H_act: BATCH_SIZE×HIDDEN_DIM
-    //    - Y_pred, y_true, output_grad: BATCH_SIZE×OUTPUT_DIM
-    //    - delta_hidden: BATCH_SIZE×HIDDEN_DIM
-    //    - 权重与梯度：
-    //       W1: INPUT_DIM×HIDDEN_DIM, b1: HIDDEN_DIM
-    //       W2: HIDDEN_DIM×OUTPUT_DIM, b2: OUTPUT_DIM
-    //       grad_W1: 同 W1 尺寸, grad_b1: HIDDEN_DIM
-    //       grad_W2: 同 W2 尺寸, grad_b2: OUTPUT_DIM
     int train_batches = (train_samples + BATCH_SIZE - 1) / BATCH_SIZE;
 
     double *d_X_batch, *d_H_lin, *d_H_act, *d_Y_pred, *d_y_true, *d_output_grad, *d_delta_hidden;
     double *d_W1, *d_b1, *d_W2, *d_b2;
     double *d_grad_W1, *d_grad_b1, *d_grad_W2, *d_grad_b2;
+    // 为动量添加速度缓冲区
+    double *d_v_W1, *d_v_b1, *d_v_W2, *d_v_b2;
 
     hipMalloc(&d_X_batch,     sizeof(double) * BATCH_SIZE * INPUT_DIM);
     hipMalloc(&d_H_lin,       sizeof(double) * BATCH_SIZE * HIDDEN_DIM);
@@ -258,6 +255,18 @@ int main() {
     hipMalloc(&d_grad_W2, sizeof(double) * HIDDEN_DIM * OUTPUT_DIM);
     hipMalloc(&d_grad_b2, sizeof(double) * OUTPUT_DIM);
 
+    // 额外分配动量速度：初始值均为 0
+    hipMalloc(&d_v_W1, sizeof(double) * INPUT_DIM * HIDDEN_DIM);
+    hipMalloc(&d_v_b1, sizeof(double) * HIDDEN_DIM);
+    hipMalloc(&d_v_W2, sizeof(double) * HIDDEN_DIM * OUTPUT_DIM);
+    hipMalloc(&d_v_b2, sizeof(double) * OUTPUT_DIM);
+
+    // 将速度缓冲区初始化为 0
+    hipMemset(d_v_W1, 0, sizeof(double) * INPUT_DIM * HIDDEN_DIM);
+    hipMemset(d_v_b1, 0, sizeof(double) * HIDDEN_DIM);
+    hipMemset(d_v_W2, 0, sizeof(double) * HIDDEN_DIM * OUTPUT_DIM);
+    hipMemset(d_v_b2, 0, sizeof(double) * OUTPUT_DIM);
+
     // 6) 在主机端使用 Xavier 初始化权重与偏置
     std::vector<double> h_W1(INPUT_DIM * HIDDEN_DIM),
                         h_b1(HIDDEN_DIM),
@@ -265,7 +274,6 @@ int main() {
                         h_b2(OUTPUT_DIM);
     srand(123);
     // ----- Xavier 初始化 -----
-    // W1: 输入=INPUT_DIM, 输出=HIDDEN_DIM
     double limit1 = std::sqrt(6.0 / (INPUT_DIM + HIDDEN_DIM));
     for (int i = 0; i < INPUT_DIM * HIDDEN_DIM; ++i) {
         double u = rand() / (double)RAND_MAX;       // [0,1)
@@ -274,7 +282,6 @@ int main() {
     for (int j = 0; j < HIDDEN_DIM; ++j) {
         h_b1[j] = 0.0;
     }
-    // W2: 输入=HIDDEN_DIM, 输出=OUTPUT_DIM
     double limit2 = std::sqrt(6.0 / (HIDDEN_DIM + OUTPUT_DIM));
     for (int i = 0; i < HIDDEN_DIM * OUTPUT_DIM; ++i) {
         double u = rand() / (double)RAND_MAX;
@@ -283,7 +290,6 @@ int main() {
     for (int j = 0; j < OUTPUT_DIM; ++j) {
         h_b2[j] = 0.0;
     }
-    // ---------------------------
 
     // 拷到设备
     hipMemcpy(d_W1, h_W1.data(), sizeof(double) * INPUT_DIM * HIDDEN_DIM, hipMemcpyHostToDevice);
@@ -348,7 +354,6 @@ int main() {
                     d_H_lin, total_hidden
                 );
                 hipDeviceSynchronize();
-                // 将 ReLU 结果留在 d_H_lin，即 H_act
                 hipMemcpy(d_H_act, d_H_lin, sizeof(double) * BATCH_SIZE * HIDDEN_DIM, hipMemcpyDeviceToDevice);
             }
 
@@ -379,21 +384,23 @@ int main() {
                 hipDeviceSynchronize();
             }
 
-            // 7.6) 计算输出梯度：dL/dY = 2*(Y_pred - y_true)/batch
+            // 7.6) 计算输出梯度：dL/dY = 2*(Y_pred - y_true)/current_batch_size
             {
                 int threads = 256;
-                int blocks  = (BATCH_SIZE * OUTPUT_DIM + threads - 1) / threads;
+                int blocks  = (current_batch_size * OUTPUT_DIM + threads - 1) / threads;
+                // 注意：这里传递 current_batch_size（而不是 BATCH_SIZE），避免尾部补零样本稀释梯度
                 hipLaunchKernelGGL(
                     compute_output_grad,
                     dim3(blocks), dim3(threads), 0, 0,
-                    d_Y_pred, d_y_true, d_output_grad, BATCH_SIZE
+                    d_Y_pred, d_y_true, d_output_grad, current_batch_size
                 );
                 hipDeviceSynchronize();
             }
 
             // 7.7) 计算隐藏层误差：delta_hidden = dL/dY * W2^T .* ReLU'(H_lin)
             {
-                int total_hidden = BATCH_SIZE * HIDDEN_DIM;
+                int total_hidden = BATCH_SIZE * HIDDEN_DIM; 
+                // 这里仍按 BATCH_SIZE×HIDDEN_DIM 大小计算，若尾部补零样本，它们的 H_lin=0，ReLU'=0，所以 delta_hidden=0
                 int threads = 256;
                 int blocks  = (total_hidden + threads - 1) / threads;
                 hipLaunchKernelGGL(
@@ -407,26 +414,25 @@ int main() {
 
             // 7.8) 计算 grad_W2 & grad_b2（在 GPU 上做 reduction 或者简单 CPU 归约后拷回）
             {
-                // 这里仍然用 CPU 做 reduction，拷回后再上载回 GPU
+                // 此处仍使用 CPU reduction 来计算梯度，实际可优化为 GPU 并行，但示例保持简便
                 std::vector<double> temp_Hact(BATCH_SIZE * HIDDEN_DIM);
-                std::vector<double> temp_ograd(BATCH_SIZE * OUTPUT_DIM);
+                std::vector<double> temp_ograd(current_batch_size * OUTPUT_DIM);
                 std::vector<double> h_gradW2(HIDDEN_DIM, 0.0);
                 std::vector<double> h_gradb2(OUTPUT_DIM, 0.0);
 
+                // 只拷回前 current_batch_size 个 output_grad
                 hipMemcpy(temp_Hact.data(), d_H_act, sizeof(double) * BATCH_SIZE * HIDDEN_DIM, hipMemcpyDeviceToHost);
-                hipMemcpy(temp_ograd.data(), d_output_grad, sizeof(double) * BATCH_SIZE * OUTPUT_DIM, hipMemcpyDeviceToHost);
+                hipMemcpy(temp_ograd.data(), d_output_grad, sizeof(double) * current_batch_size * OUTPUT_DIM, hipMemcpyDeviceToHost);
 
-                // grad_W2[j] = sum_{i<batch} H_act[i,j] * output_grad[i]
                 for (int j = 0; j < HIDDEN_DIM; ++j) {
                     double sum_w2 = 0.0;
-                    for (int i = 0; i < BATCH_SIZE; ++i) {
+                    for (int i = 0; i < current_batch_size; ++i) {
                         sum_w2 += temp_Hact[i * HIDDEN_DIM + j] * temp_ograd[i];
                     }
                     h_gradW2[j] = sum_w2;
                 }
-                // grad_b2 = sum(output_grad)
                 double sum_b2 = 0.0;
-                for (int i = 0; i < BATCH_SIZE; ++i) {
+                for (int i = 0; i < current_batch_size; ++i) {
                     sum_b2 += temp_ograd[i];
                 }
                 h_gradb2[0] = sum_b2;
@@ -471,36 +477,41 @@ int main() {
                 hipMemcpy(d_grad_W1, h_gradW1.data(), sizeof(double) * INPUT_DIM * HIDDEN_DIM, hipMemcpyHostToDevice);
             }
 
-            // 7.11) 在 GPU 上用 SGD 更新 W2、b2、W1、b1
+            // 7.11) 在 GPU 上用带 Momentum 的 SGD 更新 W2、b2、W1、b1
             {
                 int threads = 256;
-                int blocks_W2 = (HIDDEN_DIM * OUTPUT_DIM + threads - 1) / threads;
-                int blocks_b2 = (OUTPUT_DIM + threads - 1) / threads;
-                int blocks_W1 = (INPUT_DIM * HIDDEN_DIM + threads - 1) / threads;
-                int blocks_b1 = (HIDDEN_DIM + threads - 1) / threads;
+                int size_W2 = HIDDEN_DIM * OUTPUT_DIM;
+                int size_b2 = OUTPUT_DIM;
+                int size_W1 = INPUT_DIM * HIDDEN_DIM;
+                int size_b1 = HIDDEN_DIM;
+
+                int blocks_W2 = (size_W2 + threads - 1) / threads;
+                int blocks_b2 = (size_b2 + threads - 1) / threads;
+                int blocks_W1 = (size_W1 + threads - 1) / threads;
+                int blocks_b1 = (size_b1 + threads - 1) / threads;
 
                 hipLaunchKernelGGL(
-                    sgd_update,
+                    momentum_sgd_update,
                     dim3(blocks_W2), dim3(threads), 0, 0,
-                    d_W2, d_grad_W2, LEARNING_RATE, HIDDEN_DIM * OUTPUT_DIM
+                    d_W2, d_v_W2, d_grad_W2, LEARNING_RATE, MOMENTUM, size_W2
                 );
                 hipDeviceSynchronize();
                 hipLaunchKernelGGL(
-                    sgd_update,
+                    momentum_sgd_update,
                     dim3(blocks_b2), dim3(threads), 0, 0,
-                    d_b2, d_grad_b2, LEARNING_RATE, OUTPUT_DIM
+                    d_b2, d_v_b2, d_grad_b2, LEARNING_RATE, MOMENTUM, size_b2
                 );
                 hipDeviceSynchronize();
                 hipLaunchKernelGGL(
-                    sgd_update,
+                    momentum_sgd_update,
                     dim3(blocks_W1), dim3(threads), 0, 0,
-                    d_W1, d_grad_W1, LEARNING_RATE, INPUT_DIM * HIDDEN_DIM
+                    d_W1, d_v_W1, d_grad_W1, LEARNING_RATE, MOMENTUM, size_W1
                 );
                 hipDeviceSynchronize();
                 hipLaunchKernelGGL(
-                    sgd_update,
+                    momentum_sgd_update,
                     dim3(blocks_b1), dim3(threads), 0, 0,
-                    d_b1, d_grad_b1, LEARNING_RATE, HIDDEN_DIM
+                    d_b1, d_v_b1, d_grad_b1, LEARNING_RATE, MOMENTUM, size_b1
                 );
                 hipDeviceSynchronize();
             }
@@ -526,14 +537,12 @@ int main() {
     int test_batches = (test_samples + BATCH_SIZE - 1) / BATCH_SIZE;
     double total_test_loss = 0.0;
 
-    // 用于存放所有测试样本的 normalized 预测值和真实值
     std::vector<double> h_preds_norm(test_samples, 0.0);
     std::vector<double> h_truth_norm(test_samples, 0.0);
 
     for (int b = 0; b < test_batches; ++b) {
         int curr_bs = std::min(BATCH_SIZE, test_samples - b * BATCH_SIZE);
 
-        // 准备本批次输入
         std::vector<double> temp_X(BATCH_SIZE * INPUT_DIM, 0.0);
         for (int i = 0; i < curr_bs; ++i) {
             std::copy(
@@ -623,6 +632,10 @@ int main() {
     hipFree(d_grad_b1);
     hipFree(d_grad_W2);
     hipFree(d_grad_b2);
+    hipFree(d_v_W1);
+    hipFree(d_v_b1);
+    hipFree(d_v_W2);
+    hipFree(d_v_b2);
 
     return 0;
 }

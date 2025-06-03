@@ -1,0 +1,19 @@
+====== 编译 mlp_forward.cpp ======
+[Done] 生成可执行文件：mlp_forward_level
+
+====== 运行 mlp_forward ======
+===== Timing Results =====
+First layer (GEMM + Bias+ReLU) time: 0.146713 ms
+Second layer (GEMM + Bias)      time: 0.078877 ms
+Total forward pass (including memcpy)       time: 0.036958 ms
+===========================
+
+Sample outputs (前 5 个样本，每个样本输出维度 O=5):
+  Y[0] = [ 3.6021, 1.61555, 2.39682, -2.6155, -0.577641 ]
+  Y[1] = [ 4.41813, 2.52256, 2.82815, -1.09, -0.100387 ]
+  Y[2] = [ 4.46007, 1.99593, 1.48938, -4.04249, -0.183676 ]
+  Y[3] = [ 1.85753, 1.35072, 0.842197, -1.2874, 0.985052 ]
+  Y[4] = [ 6.77945, 2.74331, 3.23075, -5.7286, -0.715166 ]
+[Done] mlp_forward 执行完毕，输出已追加到 mlp_forward_level.txt
+
+====== 如果需要使用性能分析，请执行：hipprof ./mlp_forward ======

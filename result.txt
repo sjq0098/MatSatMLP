@@ -1,42 +1,29 @@
-Matrix Size: 128x128
-Naive Time: 2557.00 us
-CacheOpt Time: 1115.70 us
-Unroll Time: 218.90 us
-SIMD Time: 617.80 us
-OpenMP Time: 1411.50 us
--------------------------------
-Matrix Size: 256x256
-Naive Time: 11191.80 us
-CacheOpt Time: 2256.50 us
-Unroll Time: 1352.10 us
-SIMD Time: 4061.40 us
-OpenMP Time: 1439.10 us
--------------------------------
-Matrix Size: 512x512
-Naive Time: 123012.70 us
-CacheOpt Time: 21643.20 us
-Unroll Time: 13360.60 us
-SIMD Time: 39151.30 us
-OpenMP Time: 7585.70 us
--------------------------------
-Matrix Size: 1024x1024
-Naive Time: 1593276.80 us
-CacheOpt Time: 259923.70 us
-Unroll Time: 237788.40 us
-SIMD Time: 460122.70 us
-OpenMP Time: 54970.10 us
--------------------------------
-Matrix Size: 2048x2048
-Naive Time: 53738342.40 us
-CacheOpt Time: 9718173.70 us
-Unroll Time: 5217339.50 us
-SIMD Time: 6931752.90 us
-OpenMP Time: 1022494.40 us
--------------------------------
-Matrix Size: 4096x4096
-Naive Time: 20017512689.50 us
-CacheOpt Time: 44626259.00 us
-Unroll Time: 26883833.70 us
-SIMD Time: 53614189.80 us
-OpenMP Time: 7449468.60 us
--------------------------------
+====== 编译并运行 matmul_benchmark ======
+
+-> 正在编译 matmul_benchmark.cpp ...
+[Done] 生成可执行文件：matmul_benchmark
+
+-> 运行 matmul_benchmark，将日志写入 result.txt ...
+================ Matrix Multiplication Benchmark =================
+[CPU][Baseline] Time elapsed: 10875.7 ms, Performance: 0.197458 GELOP/S, Memory bandwidth: 0.00269962 GB/s
+
+[CPU][OpenMP] Time elapsed: 1407.37 ms, Performance: 1.52588 GELOP/S, Memory bandwidth: 0.0208617 GB/s, Valid: true
+
+[CPU][Block Tiling] Time elapsed: 61.8899 ms, Performance: 34.6985 GELOP/S, Memory bandwidth: 0.474393 GB/s, Valid: true
+
+[CPU][Transpose] Time elapsed: 299.239 ms, Performance: 7.17649 GELOP/S, Memory bandwidth: 0.098116 GB/s, Valid: true
+
+[CPU][SIMD] Time elapsed: 2605.42 ms, Performance: 0.824235 GELOP/S, Memory bandwidth: 0.0112688 GB/s, Valid: true
+
+[CPU][SIMD+OpenMP] Time elapsed: 360.4 ms, Performance: 5.95861 GELOP/S, Memory bandwidth: 0.0814654 GB/s, Valid: true
+
+[CPU][SIMD+Block] Time elapsed: 386.325 ms, Performance: 5.55875 GELOP/S, Memory bandwidth: 0.0759985 GB/s, Valid: true
+
+---- GPU (HIP/DCU) Benchmark ----
+[GPU] Kernel execution time: 3.27396 ms
+[GPU] Performance: 655.928 GELOP/S, Memory bandwidth: 8.96776 GB/s
+[GPU] Validation: PASS
+
+================ Benchmark Finished =================
+
+====== 全部测试完成，结果保存在 result.txt ======
